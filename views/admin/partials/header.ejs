@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= typeof pageTitle !== 'undefined' ? pageTitle + ' — ' : '' %>Admin | <%= config.nome_loja %></title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="/public/css/admin.css">
+  <style>:root { --primary: <%= config.cor_principal || '#e63946' %>; }</style>
+  <meta name="robots" content="noindex, nofollow">
+</head>
+<body class="admin-body">
+
+<div class="admin-layout">
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <i class="fas fa-shopping-cart"></i>
+      <span>Painel Admin</span>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="/admin/dashboard" class="nav-item <%= typeof activeMenu !== 'undefined' && activeMenu === 'dashboard' ? 'active' : '' %>">
+        <i class="fas fa-tachometer-alt"></i> Dashboard
+      </a>
+      <a href="/admin/produtos" class="nav-item <%= typeof activeMenu !== 'undefined' && activeMenu === 'produtos' ? 'active' : '' %>">
+        <i class="fas fa-box"></i> Produtos
+      </a>
+      <a href="/admin/produtos/novo" class="nav-item <%= typeof activeMenu !== 'undefined' && activeMenu === 'novo-produto' ? 'active' : '' %>">
+        <i class="fas fa-plus-circle"></i> Novo Produto
+      </a>
+      <a href="/admin/categorias" class="nav-item <%= typeof activeMenu !== 'undefined' && activeMenu === 'categorias' ? 'active' : '' %>">
+        <i class="fas fa-tags"></i> Categorias
+      </a>
+      <a href="/admin/configuracoes" class="nav-item <%= typeof activeMenu !== 'undefined' && activeMenu === 'config' ? 'active' : '' %>">
+        <i class="fas fa-cog"></i> Configurações
+      </a>
+      <div class="nav-divider"></div>
+      <a href="/" class="nav-item" target="_blank">
+        <i class="fas fa-external-link-alt"></i> Ver Loja
+      </a>
+      <form method="POST" action="/admin/logout">
+        <button class="nav-item nav-logout" type="submit">
+          <i class="fas fa-sign-out-alt"></i> Sair
+        </button>
+      </form>
+    </nav>
+  </aside>
+
+  <!-- Main -->
+  <div class="admin-main">
+    <!-- Top bar -->
+    <div class="admin-topbar">
+      <button class="sidebar-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">
+        <i class="fas fa-bars"></i>
+      </button>
+      <div class="topbar-right">
+        <span><i class="fas fa-user-shield"></i> <%= typeof adminUsuario !== 'undefined' ? adminUsuario : 'Admin' %></span>
+      </div>
+    </div>
+
+    <div class="admin-content">
