@@ -1,0 +1,30 @@
+<%- include('partials/header', {title: categoria.nome}) %>
+
+<section class="section">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="/">Início</a> <i class="fas fa-chevron-right"></i>
+      <span><%= categoria.nome %></span>
+    </div>
+    <div class="section-header">
+      <h2><%= categoria.nome %></h2>
+      <span class="section-line"></span>
+      <p class="section-count"><%= produtos.length %> produto(s) encontrado(s)</p>
+    </div>
+    <% if(produtos.length === 0) { %>
+    <div class="empty-state">
+      <i class="fas fa-box-open"></i>
+      <p>Nenhum produto nesta categoria ainda.</p>
+      <a href="/" class="btn-primary">Ver Todos</a>
+    </div>
+    <% } else { %>
+    <div class="products-grid">
+      <% produtos.forEach(p => { %>
+      <%- include('partials/produto-card', {p}) %>
+      <% }) %>
+    </div>
+    <% } %>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

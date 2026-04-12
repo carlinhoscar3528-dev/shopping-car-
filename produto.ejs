@@ -1,0 +1,107 @@
+<%- include('partials/header', {title: produto.nome}) %>
+
+<section class="section">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="/">Início</a> <i class="fas fa-chevron-right"></i>
+      <% if(produto.categoria_id) { %><a href="/categoria/<%= produto.categoria_id %>"><%= produto.categoria_nome %></a> <i class="fas fa-chevron-right"></i><% } %>
+      <span><%= produto.nome %></span>
+    </div>
+
+    <div class="produto-detalhe">
+      <div class="produto-img-wrap">
+        <img src="<%= produto.imagem_url || '/public/images/no-image.svg' %>" alt="<%= produto.nome %>" class="produto-img-principal">
+      </div>
+      <div class="produto-info">
+        <p class="produto-cat-label"><%= produto.categoria_nome || 'Produto' %></p>
+        <h1 class="produto-nome"><%= produto.nome %></h1>
+
+        <div class="produto-preco-wrap">
+          <% if(produto.preco_original && produto.preco_original > produto.preco) { %>
+            <span class="produto-preco-orig">R$ <%= produto.preco_original.toFixed(2).replace('.',',') %></span>
+            <span class="produto-desconto">-<%= Math.round((1 - produto.preco/produto.preco_original)*100) %>% OFF</span>
+          <% } %>
+          <div class="produto-preco">R$ <%= produto.preco.toFixed(2).replace('.',',') %></div>
+          <p class="produto-pix">
+            <i class="fas fa-bolt"></i> <strong>R$ <%= (produto.preco * 0.95).toFixed(2).replace('.',',') %></strong> com 5% de desconto no Pix
+          </p>
+          <p class="produto-parcel">ou 12x de R$ <%= (produto.preco/12).toFixed(2).replace('.',',') %> sem juros</p>
+        </div>
+
+        <% if(produto.descricao) { %>
+        <div class="produto-desc">
+          <h3>Descrição</h3>
+          <p><%= produto.descricao %></p>
+        </div>
+        <% } %>
+
+        <div class="produto-acoes">
+          <div class="qty-wrap">
+            <label>Quantidade:</label>
+            <div class="qty-ctrl">
+              <button onclick="changeQty(-1)">-</button>
+              <input type="number" id="qty" value="1" min="1" max="99">
+              <button onclick="changeQty(1)">+</button>
+            </div>
+          </div>
+
+          <button class="btn-cart-lg" onclick="addToCart(<%= produto.id %>, this)">
+            <i class="fas fa-shopping-cart"></i> Adicionar ao Carrinho
+          </button>
+          <a href="<%= produto.link_compra || '#' %>" class="btn-buy-lg" <% if(produto.link_compra && produto.link_compra !== '#') { %>target="_blank"<% } %>>
+            <i class="fas fa-bolt"></i> Comprar Agora
+          </a>
+        </div>
+
+        <div class="produto-selos">
+          <span><i class="fas fa-lock"></i> Compra Segura</span>
+          <span><i class="fas fa-undo"></i> 7 dias p/ devolução</span>
+          <span><i class="fas fa-truck"></i> Entrega Garantida</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<% if(relacionados.length > 0) { %>
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <h2>Produtos Relacionados</h2>
+      <span class="section-line"></span>
+    </div>
+    <div class="products-grid">
+      <% relacionados.forEach(p => { %>
+      <%- include('partials/produto-card', {p}) %>
+      <% }) %>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<script>
+function changeQty(delta) {
+  const input = document.getElementById('qty');
+  let v = parseInt(input.value) + delta;
+  if(v < 1) v = 1;
+  if(v > 99) v = 99;
+  input.value = v;
+}
+function addToCart(id, btn) {
+  const qty = document.getElementById('qty')?.value || 1;
+  fetch('/carrinho/adicionar', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({produto_id: id, qty: parseInt(qty)})
+  }).then(r => r.json()).then(d => {
+    if(d.success) {
+      document.getElementById('cart-count').textContent = d.cartCount;
+      btn.innerHTML = '<i class="fas fa-check"></i> Adicionado!';
+      btn.classList.add('added');
+      setTimeout(() => { btn.innerHTML = '<i class="fas fa-shopping-cart"></i> Adicionar ao Carrinho'; btn.classList.remove('added'); }, 2000);
+    }
+  });
+}
+</script>
+
+<%- include('partials/footer') %>

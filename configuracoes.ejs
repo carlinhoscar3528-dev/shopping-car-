@@ -1,0 +1,121 @@
+<%- include('partials/header', {pageTitle: 'Configurações', activeMenu: 'config'}) %>
+
+<div class="page-header">
+  <h1><i class="fas fa-cog"></i> Configurações da Loja</h1>
+  <p>Personalize a aparência e informações da sua loja</p>
+</div>
+
+<% if(success == '1') { %>
+<div class="alert alert-success"><i class="fas fa-check-circle"></i> Configurações salvas com sucesso!</div>
+<% } %>
+<% if(success == '2') { %>
+<div class="alert alert-success"><i class="fas fa-check-circle"></i> Senha alterada com sucesso!</div>
+<% } %>
+<% if(typeof error !== 'undefined' && error) { %>
+<div class="alert alert-error"><i class="fas fa-exclamation-circle"></i> Senha atual incorreta.</div>
+<% } %>
+
+<div class="dashboard-grid">
+  <!-- Store Settings -->
+  <div class="card">
+    <div class="card-header">
+      <h2><i class="fas fa-store"></i> Informações da Loja</h2>
+    </div>
+    <form method="POST" action="/admin/configuracoes" enctype="multipart/form-data" class="form-inline-card">
+      <div class="form-group">
+        <label>Nome da Loja *</label>
+        <input type="text" name="nome_loja" value="<%= config.nome_loja %>" required>
+      </div>
+      <div class="form-group">
+        <label>Slogan</label>
+        <input type="text" name="slogan" value="<%= config.slogan || '' %>" placeholder="Ex: Os melhores produtos com os melhores preços!">
+      </div>
+      <div class="form-group">
+        <label>Cor Principal da Loja</label>
+        <div class="color-picker-wrap">
+          <input type="color" name="cor_principal" value="<%= config.cor_principal %>" id="colorPicker" onchange="updateColorPreview(this.value)">
+          <input type="text" id="colorHex" value="<%= config.cor_principal %>" onchange="syncColor(this.value)" placeholder="#e63946">
+          <div class="color-preview" id="colorPreview" style="background: <%= config.cor_principal %>"></div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>URL Personalizada <small>(domínio)</small></label>
+        <input type="url" name="url_personalizada" value="<%= config.url_personalizada || '' %>" placeholder="https://minha-loja.com.br">
+      </div>
+      <div class="form-group">
+        <label>Banner Principal <small>(jpg, png — máx. 5MB)</small></label>
+        <% if(config.banner_url) { %>
+        <div class="current-img" style="margin-bottom:10px">
+          <img src="<%= config.banner_url %>" alt="Banner atual" style="width:100%; border-radius:8px; max-height:120px; object-fit:cover;">
+          <p style="font-size:12px; color:#666; margin-top:4px">Banner atual — envie um novo para substituir</p>
+        </div>
+        <% } %>
+        <input type="file" name="banner" accept="image/*">
+      </div>
+      <button type="submit" class="btn-primary" style="width:100%">
+        <i class="fas fa-save"></i> Salvar Configurações
+      </button>
+    </form>
+  </div>
+
+  <!-- Change Password -->
+  <div class="card">
+    <div class="card-header">
+      <h2><i class="fas fa-key"></i> Alterar Senha Admin</h2>
+    </div>
+    <form method="POST" action="/admin/alterar-senha" class="form-inline-card">
+      <div class="form-group">
+        <label>Senha Atual *</label>
+        <input type="password" name="senha_atual" required placeholder="Digite a senha atual">
+      </div>
+      <div class="form-group">
+        <label>Nova Senha *</label>
+        <input type="password" name="nova_senha" required minlength="6" placeholder="Mínimo 6 caracteres">
+      </div>
+      <div class="form-group">
+        <label>Confirmar Nova Senha *</label>
+        <input type="password" id="confirmSenha" required placeholder="Repita a nova senha">
+      </div>
+      <button type="submit" class="btn-primary" style="width:100%" onclick="return validarSenha()">
+        <i class="fas fa-lock"></i> Alterar Senha
+      </button>
+    </form>
+
+    <div class="card-header" style="margin-top:30px">
+      <h2><i class="fas fa-info-circle"></i> Informações do Sistema</h2>
+    </div>
+    <div class="info-list">
+      <div class="info-item">
+        <span>Versão</span><strong>1.0.0</strong>
+      </div>
+      <div class="info-item">
+        <span>Banco de dados</span><strong>SQLite</strong>
+      </div>
+      <div class="info-item">
+        <span>Servidor</span><strong>Node.js + Express</strong>
+      </div>
+      <div class="info-item">
+        <span>Status</span><strong style="color:#10b981">✓ Online</strong>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function updateColorPreview(val) {
+  document.getElementById('colorHex').value = val;
+  document.getElementById('colorPreview').style.background = val;
+}
+function syncColor(val) {
+  document.getElementById('colorPicker').value = val;
+  document.getElementById('colorPreview').style.background = val;
+}
+function validarSenha() {
+  const nova = document.querySelector('input[name="nova_senha"]').value;
+  const confirm = document.getElementById('confirmSenha').value;
+  if(nova !== confirm) { alert('As senhas não coincidem!'); return false; }
+  return true;
+}
+</script>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,32 @@
+<%- include('partials/header', {title: 'Busca: ' + q}) %>
+
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <h2><i class="fas fa-search"></i> Busca: "<%= q %>"</h2>
+      <span class="section-line"></span>
+      <p class="section-count"><%= produtos.length %> resultado(s) encontrado(s)</p>
+    </div>
+    <% if(produtos.length === 0 && q) { %>
+    <div class="empty-state">
+      <i class="fas fa-search"></i>
+      <h3>Nenhum resultado para "<%= q %>"</h3>
+      <p>Tente buscar por outros termos</p>
+      <a href="/" class="btn-primary">Ver Todos os Produtos</a>
+    </div>
+    <% } else if(!q) { %>
+    <div class="empty-state">
+      <i class="fas fa-search"></i>
+      <p>Digite algo para buscar produtos</p>
+    </div>
+    <% } else { %>
+    <div class="products-grid">
+      <% produtos.forEach(p => { %>
+      <%- include('partials/produto-card', {p}) %>
+      <% }) %>
+    </div>
+    <% } %>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

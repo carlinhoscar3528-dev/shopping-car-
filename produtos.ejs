@@ -1,0 +1,104 @@
+<%- include('partials/header', {pageTitle: 'Produtos', activeMenu: 'produtos'}) %>
+
+<div class="page-header">
+  <div>
+    <h1><i class="fas fa-box"></i> Produtos</h1>
+    <p><%= produtos.length %> produto(s) cadastrado(s)</p>
+  </div>
+  <a href="/admin/produtos/novo" class="btn-primary">
+    <i class="fas fa-plus"></i> Novo Produto
+  </a>
+</div>
+
+<!-- Filter Bar -->
+<div class="filter-bar">
+  <input type="text" id="filterInput" placeholder="Filtrar por nome ou categoria..." onkeyup="filterTable()">
+  <select id="filterCat" onchange="filterTable()">
+    <option value="">Todas as categorias</option>
+    <% categorias.forEach(c => { %>
+    <option value="<%= c.nome %>"><%= c.nome %></option>
+    <% }) %>
+  </select>
+</div>
+
+<div class="card">
+  <div class="table-wrap">
+    <table class="table" id="prodTable">
+      <thead>
+        <tr>
+          <th>Produto</th>
+          <th>Preço</th>
+          <th>Categoria</th>
+          <th>Destaque</th>
+          <th>Status</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% produtos.forEach(p => { %>
+        <tr data-nome="<%= p.nome.toLowerCase() %>" data-cat="<%= (p.categoria_nome || '').toLowerCase() %>">
+          <td>
+            <div class="td-produto">
+              <img src="<%= p.imagem_url || '/public/images/no-image.svg' %>" alt="">
+              <div>
+                <span class="prod-nome"><%= p.nome %></span>
+                <% if(p.link_compra && p.link_compra !== '#') { %>
+                <small class="prod-link"><i class="fas fa-link"></i> Link cadastrado</small>
+                <% } %>
+              </div>
+            </div>
+          </td>
+          <td>
+            R$ <%= p.preco.toFixed(2).replace('.',',') %>
+            <% if(p.preco_original) { %>
+            <br><small class="text-muted">De: R$ <%= p.preco_original.toFixed(2).replace('.',',') %></small>
+            <% } %>
+          </td>
+          <td><%= p.categoria_nome || '—' %></td>
+          <td>
+            <% if(p.destaque) { %>
+            <span class="badge badge-warning"><i class="fas fa-fire"></i> Sim</span>
+            <% } else { %>
+            <span class="badge badge-default">Não</span>
+            <% } %>
+          </td>
+          <td>
+            <% if(p.ativo) { %>
+            <span class="badge badge-success">Ativo</span>
+            <% } else { %>
+            <span class="badge badge-danger">Inativo</span>
+            <% } %>
+          </td>
+          <td>
+            <div class="action-btns">
+              <a href="/admin/produtos/<%= p.id %>/editar" class="btn-icon btn-edit" title="Editar">
+                <i class="fas fa-edit"></i>
+              </a>
+              <form method="POST" action="/admin/produtos/<%= p.id %>/excluir" onsubmit="return confirm('Desativar este produto?')">
+                <button class="btn-icon btn-delete" type="submit" title="Desativar">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+function filterTable() {
+  const q = document.getElementById('filterInput').value.toLowerCase();
+  const cat = document.getElementById('filterCat').value.toLowerCase();
+  document.querySelectorAll('#prodTable tbody tr').forEach(row => {
+    const nome = row.dataset.nome || '';
+    const rowCat = row.dataset.cat || '';
+    const show = (!q || nome.includes(q)) && (!cat || rowCat.includes(cat));
+    row.style.display = show ? '' : 'none';
+  });
+}
+</script>
+
+<%- include('partials/footer') %>

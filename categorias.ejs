@@ -1,0 +1,75 @@
+<%- include('partials/header', {pageTitle: 'Categorias', activeMenu: 'categorias'}) %>
+
+<div class="page-header">
+  <div>
+    <h1><i class="fas fa-tags"></i> Categorias</h1>
+    <p>Gerencie as categorias da sua loja</p>
+  </div>
+</div>
+
+<div class="dashboard-grid">
+  <!-- Add Category Form -->
+  <div class="card">
+    <div class="card-header">
+      <h2><i class="fas fa-plus-circle"></i> Nova Categoria</h2>
+    </div>
+    <form method="POST" action="/admin/categorias/nova" class="form-inline-card">
+      <div class="form-group">
+        <label>Nome da Categoria *</label>
+        <input type="text" name="nome" placeholder="Ex: Eletrônicos, Roupas..." required>
+      </div>
+      <div class="form-group">
+        <label>Ordem de exibição</label>
+        <input type="number" name="ordem" value="0" min="0" max="100">
+      </div>
+      <button type="submit" class="btn-primary" style="width:100%">
+        <i class="fas fa-plus"></i> Adicionar Categoria
+      </button>
+    </form>
+  </div>
+
+  <!-- Categories List -->
+  <div class="card">
+    <div class="card-header">
+      <h2><i class="fas fa-list"></i> Categorias Cadastradas</h2>
+    </div>
+    <% if(categorias.length === 0) { %>
+    <div class="empty-admin">
+      <i class="fas fa-tags"></i>
+      <p>Nenhuma categoria cadastrada</p>
+    </div>
+    <% } else { %>
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Ordem</th>
+            <th>Produtos</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% categorias.forEach(c => { %>
+          <tr>
+            <td><i class="fas fa-tag" style="color:var(--primary)"></i> <%= c.nome %></td>
+            <td><%= c.ordem %></td>
+            <td><span class="badge badge-info"><%= c.total_produtos %></span></td>
+            <td>
+              <form method="POST" action="/admin/categorias/<%= c.id %>/excluir"
+                    onsubmit="return confirm('Excluir a categoria <%= c.nome %>? Os produtos não serão removidos.')">
+                <button class="btn-icon btn-delete" type="submit" title="Excluir">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </form>
+            </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+    <% } %>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

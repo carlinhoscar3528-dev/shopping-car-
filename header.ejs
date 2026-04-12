@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= typeof title !== 'undefined' ? title + ' | ' : '' %><%= config.nome_loja %></title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Raleway:wght@700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="/public/css/loja.css">
+  <style>
+    :root {
+      --cor-principal: <%= config.cor_principal || '#e63946' %>;
+      --cor-hover: <%= config.cor_principal ? config.cor_principal + 'dd' : '#c1121f' %>;
+    }
+  </style>
+</head>
+<body>
+  <!-- Top Bar -->
+  <div class="topbar">
+    <div class="container">
+      <span><i class="fas fa-shield-alt"></i> Compra 100% Segura</span>
+      <span><i class="fas fa-truck"></i> Frete Grátis acima de R$199</span>
+      <span><i class="fas fa-headset"></i> Suporte 24h</span>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="container header-inner">
+      <a href="/" class="logo">
+        <span class="logo-icon"><i class="fas fa-shopping-cart"></i></span>
+        <span class="logo-text"><%= config.nome_loja %></span>
+      </a>
+
+      <form class="search-bar" action="/busca" method="GET">
+        <input type="text" name="q" placeholder="Buscar produtos..." value="<%= typeof q !== 'undefined' ? q : '' %>">
+        <button type="submit"><i class="fas fa-search"></i></button>
+      </form>
+
+      <div class="header-actions">
+        <a href="/carrinho" class="cart-btn">
+          <i class="fas fa-shopping-cart"></i>
+          <span class="cart-badge" id="cart-count"><%= cartCount %></span>
+          <span>Carrinho</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Nav -->
+    <nav class="nav-bar">
+      <div class="container nav-inner">
+        <button class="nav-toggle" id="navToggle"><i class="fas fa-bars"></i> Categorias</button>
+        <ul class="nav-list" id="navList">
+          <li><a href="/"><i class="fas fa-home"></i> Início</a></li>
+          <% categorias.forEach(cat => { %>
+          <li><a href="/categoria/<%= cat.id %>"><%= cat.nome %></a></li>
+          <% }) %>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <main>

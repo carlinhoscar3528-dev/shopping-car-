@@ -1,0 +1,80 @@
+  </main>
+
+  <!-- Trust Seals -->
+  <section class="trust-section">
+    <div class="container">
+      <div class="trust-grid">
+        <div class="trust-item">
+          <i class="fas fa-lock"></i>
+          <div>
+            <strong>Pagamento Seguro</strong>
+            <span>Criptografia SSL 256-bit</span>
+          </div>
+        </div>
+        <div class="trust-item">
+          <i class="fas fa-undo-alt"></i>
+          <div>
+            <strong>Devolução Fácil</strong>
+            <span>7 dias para troca ou devolução</span>
+          </div>
+        </div>
+        <div class="trust-item">
+          <i class="fas fa-truck-fast"></i>
+          <div>
+            <strong>Entrega Rápida</strong>
+            <span>Para todo o Brasil</span>
+          </div>
+        </div>
+        <div class="trust-item">
+          <i class="fas fa-headset"></i>
+          <div>
+            <strong>Suporte 24/7</strong>
+            <span>Estamos sempre disponíveis</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <i class="fas fa-shopping-cart"></i> <%= config.nome_loja %>
+        </div>
+        <p><%= config.slogan %></p>
+        <div class="payment-icons">
+          <span><i class="fab fa-pix"></i> Pix</span>
+          <span><i class="fas fa-credit-card"></i> Cartão</span>
+          <span><i class="fas fa-barcode"></i> Boleto</span>
+        </div>
+      </div>
+      <div class="footer-links">
+        <h4>Categorias</h4>
+        <ul>
+          <% categorias.slice(0,5).forEach(cat => { %>
+          <li><a href="/categoria/<%= cat.id %>"><%= cat.nome %></a></li>
+          <% }) %>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Atendimento</h4>
+        <ul>
+          <li><a href="#">Central de Ajuda</a></li>
+          <li><a href="#">Trocas e Devoluções</a></li>
+          <li><a href="#">Política de Privacidade</a></li>
+          <li><a href="#">Termos de Uso</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container">
+        <p>&copy; <%= new Date().getFullYear() %> <%= config.nome_loja %>. Todos os direitos reservados.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/public/js/loja.js"></script>
+</body>
+</html>

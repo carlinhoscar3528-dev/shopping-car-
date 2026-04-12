@@ -1,0 +1,28 @@
+<div class="product-card">
+  <% if(p.destaque) { %><span class="badge-destaque">Destaque</span><% } %>
+  <% if(p.preco_original && p.preco_original > p.preco) { %>
+    <span class="badge-off">-<%= Math.round((1 - p.preco/p.preco_original)*100) %>%</span>
+  <% } %>
+  <a href="/produto/<%= p.id %>" class="card-img-link">
+    <img src="<%= p.imagem_url || '/public/images/no-image.svg' %>" alt="<%= p.nome %>" class="card-img" loading="lazy">
+  </a>
+  <div class="card-body">
+    <p class="card-cat"><%= p.categoria_nome || 'Geral' %></p>
+    <a href="/produto/<%= p.id %>" class="card-title"><%= p.nome %></a>
+    <div class="card-price">
+      <% if(p.preco_original && p.preco_original > p.preco) { %>
+        <span class="price-original">R$ <%= p.preco_original.toFixed(2).replace('.',',') %></span>
+      <% } %>
+      <span class="price-atual">R$ <%= p.preco.toFixed(2).replace('.',',') %></span>
+    </div>
+    <p class="price-pix"><i class="fas fa-pix-icon"></i> R$ <%= (p.preco * 0.95).toFixed(2).replace('.',',') %> no Pix</p>
+    <div class="card-actions">
+      <button class="btn-cart" onclick="addToCart(<%= p.id %>, this)">
+        <i class="fas fa-cart-plus"></i> Carrinho
+      </button>
+      <a href="<%= p.link_compra || '/produto/' + p.id %>" class="btn-buy" <% if(p.link_compra && p.link_compra !== '#') { %>target="_blank"<% } %>>
+        Comprar <i class="fas fa-bolt"></i>
+      </a>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,111 @@
+<%- include('partials/header', {pageTitle: produto ? 'Editar Produto' : 'Novo Produto', activeMenu: produto ? 'produtos' : 'novo-produto'}) %>
+
+<div class="page-header">
+  <div>
+    <h1><i class="fas fa-<%= produto ? 'edit' : 'plus-circle' %>"></i> <%= produto ? 'Editar Produto' : 'Novo Produto' %></h1>
+    <p><%= produto ? 'Atualize as informações do produto' : 'Preencha os dados do novo produto' %></p>
+  </div>
+  <a href="/admin/produtos" class="btn-outline">
+    <i class="fas fa-arrow-left"></i> Voltar
+  </a>
+</div>
+
+<div class="form-layout">
+  <form method="POST" action="/admin/produtos/<%= produto ? produto.id + '/editar' : 'novo' %>" enctype="multipart/form-data" class="card form-card">
+
+    <div class="form-section">
+      <h3><i class="fas fa-info-circle"></i> Informações Básicas</h3>
+      <div class="form-group">
+        <label>Nome do Produto *</label>
+        <input type="text" name="nome" value="<%= produto ? produto.nome : '' %>" placeholder="Ex: Smartphone Samsung Galaxy..." required>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Preço Atual (R$) *</label>
+          <input type="number" name="preco" value="<%= produto ? produto.preco : '' %>" step="0.01" min="0" placeholder="99.90" required>
+        </div>
+        <div class="form-group">
+          <label>Preço Original (R$) <small>para mostrar desconto</small></label>
+          <input type="number" name="preco_original" value="<%= produto && produto.preco_original ? produto.preco_original : '' %>" step="0.01" min="0" placeholder="149.90">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Categoria</label>
+        <select name="categoria_id">
+          <option value="">Selecione uma categoria</option>
+          <% categorias.forEach(c => { %>
+          <option value="<%= c.id %>" <%= produto && produto.categoria_id == c.id ? 'selected' : '' %>><%= c.nome %></option>
+          <% }) %>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Descrição</label>
+        <textarea name="descricao" rows="4" placeholder="Descreva o produto, características, especificações..."><%= produto ? produto.descricao : '' %></textarea>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h3><i class="fas fa-link"></i> Link de Compra</h3>
+      <div class="form-group">
+        <label>URL de Compra Externa</label>
+        <input type="url" name="link_compra" value="<%= produto ? produto.link_compra : '' %>" placeholder="https://www.mercadolivre.com.br/produto...">
+        <small>O botão "Comprar Agora" vai redirecionar para este link</small>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h3><i class="fas fa-image"></i> Imagem do Produto</h3>
+      <% if(produto && produto.imagem_url) { %>
+      <div class="current-img">
+        <img src="<%= produto.imagem_url %>" alt="Imagem atual" id="imgPreview">
+        <p>Imagem atual — envie uma nova para substituir</p>
+      </div>
+      <% } else { %>
+      <div class="img-preview-wrap">
+        <img src="/public/images/no-image.svg" alt="Preview" id="imgPreview" class="img-placeholder">
+      </div>
+      <% } %>
+      <div class="form-group">
+        <label>Upload de Imagem <small>(jpg, png, webp — máx. 5MB)</small></label>
+        <input type="file" name="imagem" accept="image/*" onchange="previewImg(this)">
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h3><i class="fas fa-toggle-on"></i> Opções</h3>
+      <div class="form-row">
+        <div class="form-check">
+          <input type="checkbox" name="destaque" id="destaque" value="1" <%= produto && produto.destaque ? 'checked' : '' %>>
+          <label for="destaque"><i class="fas fa-fire"></i> Produto em Destaque</label>
+        </div>
+        <div class="form-check">
+          <input type="checkbox" name="ativo" id="ativo" value="1" <%= !produto || produto.ativo ? 'checked' : '' %>>
+          <label for="ativo"><i class="fas fa-eye"></i> Produto Ativo (visível na loja)</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <a href="/admin/produtos" class="btn-outline">Cancelar</a>
+      <button type="submit" class="btn-primary">
+        <i class="fas fa-save"></i> <%= produto ? 'Salvar Alterações' : 'Criar Produto' %>
+      </button>
+    </div>
+  </form>
+</div>
+
+<script>
+function previewImg(input) {
+  if(input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = document.getElementById('imgPreview');
+      img.src = e.target.result;
+      img.style.display = 'block';
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+</script>
+
+<%- include('partials/footer') %>

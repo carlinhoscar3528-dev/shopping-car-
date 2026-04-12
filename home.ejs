@@ -1,0 +1,93 @@
+<%- include('partials/header', {title: 'Início'}) %>
+
+<!-- HERO BANNER -->
+<section class="hero" <% if(config.banner_url) { %>style="background-image: url('<%= config.banner_url %>'); background-size: cover; background-position: center;"<% } %>>
+  <div class="hero-overlay">
+    <div class="container hero-content">
+      <p class="hero-tag"><i class="fas fa-bolt"></i> Ofertas Imperdíveis</p>
+      <h1><%= config.nome_loja %></h1>
+      <p class="hero-sub"><%= config.slogan %></p>
+      <div class="hero-btns">
+        <a href="#produtos" class="btn-hero-primary">Ver Produtos <i class="fas fa-arrow-right"></i></a>
+        <a href="/busca" class="btn-hero-secondary">Buscar <i class="fas fa-search"></i></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CATEGORY PILLS -->
+<section class="cat-pills">
+  <div class="container">
+    <div class="pills-scroll">
+      <a href="/" class="pill active"><i class="fas fa-th-large"></i> Todos</a>
+      <% categorias.forEach(cat => { %>
+      <a href="/categoria/<%= cat.id %>" class="pill"><%= cat.nome %></a>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<!-- DESTAQUES -->
+<% if(destaques.length > 0) { %>
+<section class="section" id="destaques">
+  <div class="container">
+    <div class="section-header">
+      <h2><i class="fas fa-fire"></i> Produtos em Destaque</h2>
+      <span class="section-line"></span>
+    </div>
+    <div class="products-grid">
+      <% destaques.forEach(p => { %>
+      <%- include('partials/produto-card', {p}) %>
+      <% }) %>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<!-- PROMO BANNER -->
+<section class="promo-banner">
+  <div class="container promo-inner">
+    <div class="promo-item">
+      <i class="fas fa-percentage"></i>
+      <div>
+        <strong>Até 60% OFF</strong>
+        <span>Nas melhores marcas</span>
+      </div>
+    </div>
+    <div class="promo-item">
+      <i class="fas fa-pix"></i>
+      <div>
+        <strong>5% no Pix</strong>
+        <span>Desconto na hora</span>
+      </div>
+    </div>
+    <div class="promo-item">
+      <i class="fas fa-credit-card"></i>
+      <div>
+        <strong>12x sem juros</strong>
+        <span>No cartão de crédito</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUTOS POR CATEGORIA -->
+<div id="produtos">
+<% Object.entries(produtosPorCategoria).forEach(([catNome, prods]) => { %>
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <h2><%= catNome %></h2>
+      <span class="section-line"></span>
+    </div>
+    <div class="products-grid">
+      <% prods.forEach(p => { %>
+      <%- include('partials/produto-card', {p}) %>
+      <% }) %>
+    </div>
+  </div>
+</section>
+<% }) %>
+</div>
+
+<%- include('partials/footer') %>

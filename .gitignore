@@ -1,0 +1,8 @@
+node_modules/
+db/loja.db
+db/loja.db-shm
+db/loja.db-wal
+uploads/*
+!uploads/.gitkeep
+.env
+*.log

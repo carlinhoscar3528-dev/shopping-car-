@@ -1,0 +1,68 @@
+<%- include('partials/header', {title: 'Carrinho'}) %>
+
+<section class="section">
+  <div class="container">
+    <h1 class="page-title"><i class="fas fa-shopping-cart"></i> Meu Carrinho</h1>
+
+    <% if(cart.length === 0) { %>
+    <div class="empty-cart">
+      <i class="fas fa-shopping-cart"></i>
+      <h2>Seu carrinho está vazio</h2>
+      <p>Adicione produtos para continuar comprando</p>
+      <a href="/" class="btn-primary">Ver Produtos</a>
+    </div>
+    <% } else { %>
+    <div class="cart-layout">
+      <div class="cart-items">
+        <% cart.forEach(item => { %>
+        <div class="cart-item">
+          <img src="<%= item.imagem_url || '/public/images/no-image.svg' %>" alt="<%= item.nome %>">
+          <div class="cart-item-info">
+            <h3><%= item.nome %></h3>
+            <p class="cart-item-price">R$ <%= item.preco.toFixed(2).replace('.',',') %></p>
+          </div>
+          <form method="POST" action="/carrinho/atualizar" class="qty-form">
+            <div class="qty-ctrl">
+              <button type="submit" name="qty" value="<%= item.qty - 1 %>">-</button>
+              <input type="hidden" name="produto_id" value="<%= item.id %>">
+              <span><%= item.qty %></span>
+              <button type="submit" name="qty" value="<%= item.qty + 1 %>">+</button>
+            </div>
+          </form>
+          <div class="cart-item-sub">
+            <strong>R$ <%= (item.preco * item.qty).toFixed(2).replace('.',',') %></strong>
+          </div>
+          <form method="POST" action="/carrinho/remover">
+            <input type="hidden" name="produto_id" value="<%= item.id %>">
+            <button class="btn-remove" type="submit"><i class="fas fa-trash"></i></button>
+          </form>
+        </div>
+        <% }) %>
+      </div>
+
+      <div class="cart-summary">
+        <h3>Resumo do Pedido</h3>
+        <div class="summary-row">
+          <span>Subtotal (<%= cart.reduce((a,i)=>a+i.qty,0) %> itens)</span>
+          <span>R$ <%= total.toFixed(2).replace('.',',') %></span>
+        </div>
+        <div class="summary-row green">
+          <span>Desconto Pix (5%)</span>
+          <span>- R$ <%= (total * 0.05).toFixed(2).replace('.',',') %></span>
+        </div>
+        <div class="summary-total">
+          <span>Total</span>
+          <span>R$ <%= total.toFixed(2).replace('.',',') %></span>
+        </div>
+        <p class="summary-pix">No Pix: R$ <%= (total * 0.95).toFixed(2).replace('.',',') %></p>
+        <a href="/" class="btn-checkout">
+          <i class="fas fa-bolt"></i> Finalizar Compra
+        </a>
+        <a href="/" class="btn-continue">← Continuar Comprando</a>
+      </div>
+    </div>
+    <% } %>
+  </div>
+</section>
+
+<%- include('partials/footer') %>
