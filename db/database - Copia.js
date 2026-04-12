@@ -1,10 +1,17 @@
-// Banco de dados usando sqlite3 (compatível com Node.js v24)
 const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcryptjs');
 const path = require('path');
+const fs = require('fs');
 
-const dbPath = path.join(__dirname, '..', 'db', 'loja.db');
+// No Render o disco é temporário — usar pasta /tmp que sempre existe
+const dbDir = process.env.RENDER ? '/tmp' : path.join(__dirname, '..', 'db');
+if (!fs.existsSync(dbDir)) fs.mkdirSync(dbDir, { recursive: true });
+
+const dbPath = path.join(dbDir, 'loja.db');
 const sqlite = new sqlite3.Database(dbPath);
+
+// Senha do admin — pode ser definida por variável de ambiente
+const ADMIN_SENHA = process.env.ADMIN_SENHA || 'admin123';
 
 sqlite.run('PRAGMA foreign_keys = ON');
 
@@ -27,16 +34,19 @@ sqlite.serialize(() => {
     ativo INTEGER DEFAULT 1, estoque INTEGER DEFAULT 999,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP, updated_at DATETIME DEFAULT CURRENT_TIMESTAMP)`);
 
+  // Configurações
   sqlite.get('SELECT id FROM configuracoes WHERE id = 1', (err, row) => {
-    if (!row) sqlite.run(`INSERT INTO configuracoes (id,nome_loja,cor_principal,slogan) VALUES (1,'Shopping Car com Você','#e63946','Os melhores produtos com os melhores preços!')`);
+    if (!row) sqlite.run(`INSERT INTO configuracoes (id,nome_loja,cor_principal,slogan)
+      VALUES (1,'Shopping Car com Você','#e63946','Os melhores produtos com os melhores preços!')`);
   });
-  sqlite.get('SELECT id FROM admins WHERE usuario = ?', ['admin'], (err, row) => {
-    if (!row) {
-      const hash = bcrypt.hashSync('admin123', 12);
-      sqlite.run('INSERT INTO admins (usuario, senha) VALUES (?, ?)', ['admin', hash]);
-      console.log('✅ Admin criado: usuário=admin, senha=admin123');
-    }
-  });
+
+  // Admin — SEMPRE recria com DELETE + INSERT para garantir login
+  const hash = bcrypt.hashSync(ADMIN_SENHA, 10);
+  sqlite.run('DELETE FROM admins WHERE usuario = ?', ['admin']);
+  sqlite.run('INSERT INTO admins (usuario, senha) VALUES (?, ?)', ['admin', hash]);
+  console.log('✅ Admin configurado: usuário=admin senha=' + ADMIN_SENHA);
+
+  // Categorias e produtos de exemplo
   sqlite.get('SELECT COUNT(*) as c FROM categorias', (err, row) => {
     if (row && row.c === 0) {
       ['Eletrônicos','Roupas e Moda','Casa e Jardim','Esportes','Beleza'].forEach((nome, i) => {
@@ -51,7 +61,9 @@ sqlite.serialize(() => {
         ['Kit Panelas Antiaderente',199.90,299.90,'Conjunto com 5 peças, alça ergonômica',3,'#',0],
         ['Perfume Importado 100ml',189.90,250.00,'Fragrância exclusiva, longa duração',5,'#',1],
         ['Mochila Executiva 30L',159.90,220.00,'Compartimento para notebook, USB externo',2,'#',0],
-      ].forEach(p => sqlite.run('INSERT INTO produtos (nome,preco,preco_original,descricao,categoria_id,link_compra,destaque) VALUES (?,?,?,?,?,?,?)', p));
+      ].forEach(p => sqlite.run(
+        'INSERT INTO produtos (nome,preco,preco_original,descricao,categoria_id,link_compra,destaque) VALUES (?,?,?,?,?,?,?)', p
+      ));
     }
   });
 });
