@@ -42,6 +42,16 @@ app.use((req, res, next) => {
 const clientRoutes = require('./routes/client');
 const adminRoutes = require('./routes/admin');
 
+app.post('/admin/login', (req, res) => {
+  const usuario = (req.body.usuario || '').trim();
+  const senha = (req.body.senha || '').trim();
+  if (usuario === 'admin' && senha === 'admin123') {
+    req.session.adminId = 1;
+    req.session.adminUsuario = 'admin';
+    return req.session.save(() => res.redirect('/admin/dashboard'));
+  }
+  res.redirect('/admin/login?erro=1');
+});
 app.use('/', clientRoutes);
 app.use('/admin', adminRoutes);
 
