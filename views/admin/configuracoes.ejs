@@ -117,5 +117,20 @@ function validarSenha() {
   return true;
 }
 </script>
-
+<div class="card" style="margin-top:20px;">
+  <div class="card-header">
+    <h2><i class="fas fa-shield-alt"></i> Autenticação em 2 Etapas</h2>
+  </div>
+  <div style="padding:20px;">
+    <% if(typeof tem2fa !== 'undefined' && tem2fa) { %>
+    <p style="color:#10b981;font-weight:600;margin-bottom:16px;"><i class="fas fa-check-circle"></i> 2FA está ATIVADO!</p>
+    <form method="POST" action="/admin/desativar-2fa" onsubmit="return confirm('Desativar o 2FA?')">
+      <button type="submit" class="btn-outline" style="color:#dc2626;border-color:#dc2626;"><i class="fas fa-times-circle"></i> Desativar 2FA</button>
+    </form>
+    <% } else { %>
+    <p style="color:#666;margin-bottom:16px;"><i class="fas fa-info-circle"></i> Proteja sua conta com o Google Authenticator.</p>
+    <a href="/admin/configurar-2fa" class="btn-primary"><i class="fas fa-shield-alt"></i> Ativar 2FA</a>
+    <% } %>
+  </div>
+</div>
 <%- include('partials/footer') %>
