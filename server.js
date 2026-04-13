@@ -23,13 +23,13 @@ app.use(methodOverride('_method'));
 
 app.use(session({
   secret: process.env.SESSION_SECRET || 'shoppingcar-secret-2024-xyz',
-  resave: false,
-  saveUninitialized: false,
+  resave: true,
+  saveUninitialized: true,
   cookie: {
     maxAge: 24 * 60 * 60 * 1000,
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production'
-  }
+    secure: false,
+  sameSite: 'lax'
 }));
 
 app.use((req, res, next) => {
