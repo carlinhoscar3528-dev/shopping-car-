@@ -30,6 +30,7 @@ app.use(session({
     httpOnly: true,
     secure: false,
   sameSite: 'lax'
+}
 }));
 
 app.use((req, res, next) => {
