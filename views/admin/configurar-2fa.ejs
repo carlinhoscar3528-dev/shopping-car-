@@ -1,0 +1,57 @@
+<%- include('partials/header', {pageTitle: 'Configurar 2FA', activeMenu: 'config'}) %>
+
+<div class="page-header">
+  <h1><i class="fas fa-shield-alt"></i> Configurar Autenticação em 2 Etapas</h1>
+  <p>Proteja sua conta com o Google Authenticator</p>
+</div>
+
+<% if(error) { %>
+<div class="alert alert-error"><i class="fas fa-exclamation-circle"></i> <%= error %></div>
+<% } %>
+
+<div class="form-layout">
+  <div class="card">
+    <div class="card-header">
+      <h2><i class="fas fa-qrcode"></i> Passo a Passo</h2>
+    </div>
+    <div style="padding: 24px;">
+
+      <div style="display: flex; gap: 40px; flex-wrap: wrap; align-items: flex-start;">
+        <div style="flex: 1; min-width: 200px;">
+          <h3 style="margin-bottom: 16px; font-size: 15px;">1. Escaneie o QR Code</h3>
+          <img src="<%= qrUrl %>" alt="QR Code" style="border: 3px solid #e0e0e0; border-radius: 12px; display: block;">
+          <p style="margin-top: 12px; font-size: 13px; color: #666;">Abra o <strong>Google Authenticator</strong> no celular e escaneie este QR Code</p>
+
+          <div style="margin-top: 16px; background: #f5f5f5; padding: 12px; border-radius: 8px;">
+            <p style="font-size: 12px; color: #666; margin-bottom: 4px;">Ou digite manualmente:</p>
+            <code style="font-size: 13px; font-weight: 700; letter-spacing: 2px; color: #e63946;"><%= secret %></code>
+          </div>
+        </div>
+
+        <div style="flex: 1; min-width: 200px;">
+          <h3 style="margin-bottom: 16px; font-size: 15px;">2. Digite o código gerado</h3>
+          <form method="POST" action="/admin/configurar-2fa">
+            <div class="form-group">
+              <label>Código de 6 dígitos</label>
+              <input type="number" name="token" placeholder="000000" maxlength="6" required autofocus
+                style="font-size: 24px; letter-spacing: 8px; text-align: center; font-weight: 700;">
+            </div>
+            <button type="submit" class="btn-primary" style="width: 100%; margin-top: 8px;">
+              <i class="fas fa-check"></i> Ativar 2FA
+            </button>
+          </form>
+
+          <div style="margin-top: 20px; padding: 16px; background: #fff3cd; border-radius: 8px; border-left: 4px solid #ffc107;">
+            <p style="font-size: 13px; color: #856404;">
+              <i class="fas fa-exclamation-triangle"></i>
+              <strong>Importante:</strong> Guarde o código secreto acima em lugar seguro. Você precisará dele se perder o celular.
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>
