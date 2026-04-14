@@ -46,7 +46,8 @@ const adminRoutes = require('./routes/admin');
 app.post('/admin/login', (req, res) => {
   const usuario = (req.body.usuario || '').trim();
   const senha = (req.body.senha || '').trim();
-  if (usuario === 'admin' && senha === 'admin123') {
+  const senhaCorreta = process.env.ADMIN_SENHA || 'admin123';
+if (usuario === 'admin' && senha === senhaCorreta) {
     req.session.adminId = 1;
     req.session.adminUsuario = 'admin';
     return req.session.save(() => res.redirect('/admin/dashboard'));
