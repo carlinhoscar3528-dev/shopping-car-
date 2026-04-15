@@ -43,7 +43,15 @@ sqlite.serialize(() => {
   // Admin — SEMPRE recria com DELETE + INSERT para garantir login
   const hash = bcrypt.hashSync(ADMIN_SENHA, 10);
   sqlite.run('DELETE FROM admins WHERE usuario = ?', ['admin']);
-  sqlite.run('INSERT INTO admins (usuario, senha) VALUES (?, ?)', ['admin', hash]);
+sqlite.run('INSERT INTO admins (usuario, senha) VALUES (?, ?)', ['admin', hash]);
+// Restaura 2FA se variável estiver definida
+if (process.env.TOTP_SECRET) {
+  setTimeout(() => {
+    sqlite.run('UPDATE admins SET totp_secret = ? WHERE usuario = ?', 
+      [process.env.TOTP_SECRET, 'admin']);
+    console.log('✅ 2FA restaurado automaticamente');
+  }, 2000);
+}
   console.log('✅ Admin configurado: usuário=admin senha=' + ADMIN_SENHA);
 
   // Categorias e produtos de exemplo
